@@ -8,7 +8,7 @@ setuptools.setup(
     version="1.0.0",
     author="Stefan Eiermann",
     author_email="python-org@ultraapp.de",
-    description="Simple Mailserver monitoring.",
+    description="Simple tool to check the sending and receiving of e-mails.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/eieste/MailRound",
