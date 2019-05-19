@@ -2,19 +2,19 @@ version: "3.2"
 
 services:
   mailround:
-    image: eieste/mailround:develop
+    image: eieste/mailround:latest
     restart: always
     environment:
       MAILROUND_IN_IMAP_vps1_HOST: "examplemailserver.com"
       MAILROUND_IN_IMAP_vps1_PORT: 143
-      MAILROUND_IN_IMAP_vps1_USE_SSL: true
+      MAILROUND_IN_IMAP_vps1_USE_SSL: 1
       MAILROUND_IN_IMAP_vps1_USERNAME: "accuontusername"
       MAILROUND_IN_IMAP_vps1_PASSWORD: "randompassword"
       MAILROUND_IN_IMAP_vps1_EMAIL: "test@example.com"
 
       MAILROUND_OUT_SMTP_vps2_HOST: "examplemailserver.com"
       MAILROUND_OUT_SMTP_vps2_PORT: 143
-      MAILROUND_OUT_SMTP_vps2_USE_SSL: true
+      MAILROUND_OUT_SMTP_vps2_USE_SSL: 1
       MAILROUND_OUT_SMTP_vps2_USERNAME: "accuontusername"
       MAILROUND_OUT_SMTP_vps2_PASSWORD: "randompassword"
       MAILROUND_OUT_SMTP_vps2_EMAIL: "test@example.com"

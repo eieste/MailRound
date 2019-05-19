@@ -9,3 +9,4 @@ __pycache__/
 *.swp
 dist/
 *.egg-info
+docker-composetest.yaml
