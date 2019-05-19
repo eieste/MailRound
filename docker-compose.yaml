@@ -3,6 +3,7 @@ version: "3.2"
 services:
   mailround:
     image: eieste/mailround:develop
+    restart: always
     environment:
       MAILROUND_IN_IMAP_vps1_HOST: "examplemailserver.com"
       MAILROUND_IN_IMAP_vps1_PORT: 143
