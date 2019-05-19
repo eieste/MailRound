@@ -1,0 +1,9 @@
+version: "3.2"
+
+services:
+  mailround:
+    image: mailround:rc-0.0.1
+    build:
+      context: ./
+    env_file:
+      - mailround/.env
