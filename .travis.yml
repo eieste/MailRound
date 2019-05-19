@@ -2,6 +2,7 @@ language: python
 python:
   - "3.6"
 script:
+  - python3 setup.py build sdist
   - python setup.py install
 
 
