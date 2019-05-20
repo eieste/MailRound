@@ -4,9 +4,12 @@ from controller.round_trip import RoundTrip
 import threading
 import logging
 import io
+from controller.statuslog import StatusLog
 from datetime import datetime
 import time
 
+
+logging.basicConfig(level=logging.INFO)
 
 log = logging.getLogger("mailround.app")
 
@@ -19,11 +22,11 @@ class Command:
     def arguments(self, parser):
         parser.add_argument("-v", "--verbose", help="increase output verbosity",
                             action="store_true")
-
+        parser.add_argument("--full-clean", help="Remove all MailRound E-Mails from all Mailboxes", action="store_true")
         parser.add_argument("--no-cleanup", help="Do not Delete testmail", action="store_true")
 
-
     def handle(self, options):
+        statuslog = StatusLog.get_instance()
 
         log.info("Start Mail-Round")
 
@@ -38,6 +41,11 @@ class Command:
         if options.no_cleanup:
             setattr(settings, "CLEANUP", False)
 
+        if options.full_clean:
+            for server_name, server_config in settings.MAIL_IN_SERVER.items():
+                self.mailbox_cleanup(server_config)
+                statuslog.stop()
+            exit(0)
 
         mailround_thread_store = {}
 
@@ -69,7 +77,14 @@ class Command:
         return mailround_thread_store["{}{}".format(outname, inname)]
 
 
-
+    def mailbox_cleanup(self, server_config):
+        conn = server_config.get_connection()
+        conn.select_folder("INBOX")
+        messages = conn.search()
+        for message_id, data in conn.fetch(messages, ['RFC822']).items():
+            conn.delete_messages(message_id)
+            conn.expunge(message_id)
+        conn.logout()
 
 if __name__ != "__name__":
 

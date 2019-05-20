@@ -10,3 +10,9 @@ __pycache__/
 dist/
 *.egg-info
 docker-composetest.yaml
+*.msgpack
+*.bin
+display.py
+*.mrmp
+
+*.egg-info

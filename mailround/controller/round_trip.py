@@ -12,6 +12,7 @@ import urllib.request
 import json
 import logging
 import io
+from controller.statuslog import StatusLog
 
 
 class RoundTrip(threading.Thread):
@@ -65,8 +66,6 @@ class RoundTrip(threading.Thread):
         self.log.debug("SSL: {}".format(self._mail_in.use_ssl))
         self.log.debug("User: {}".format(self._mail_in.credentials.username))
 
-
-
     def setup_log(self):
 
         log = logging.getLogger("mailround.controller.round_trip")
@@ -84,22 +83,33 @@ class RoundTrip(threading.Thread):
         return log
 
     def run(self):
+
+        StatusLog.get_instance().add_status(self.name[0], self.name[1], "start")
         try:
-            # Trigger Mail Send
+            # Trigger Mail Sen
+
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_sendmail")
             self.sendmail()
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_sendmail")
         except Exception as e:
             self.log.exception(e)
             self.log.error("Error by send E-Mail from {}".format(self._name[1]))
 
         try:
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_receive")
             self.receive()
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_receive")
         except Exception as e:
             self.log.exception(e)
             self.log.error("Error by Recive E-Mail at Mailbox {} ".format(self._name[0]))
 
         if self._error:
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "error")
+            if self._graylisting:
+                StatusLog.get_instance().add_status(self.name[0], self.name[1], "greylisting")
             self.notify()
         else:
+            StatusLog.get_instance().add_status(self.name[0], self.name[1], "success")
             self.log.info("SUCCESS between {} to {}".format(self.name[0], self.name[1]))
             self.log.removeHandler(self._log_handler)
             self._log_data.close()
@@ -125,7 +135,7 @@ If MailRound works it will be deleted""")
         try:
             conn.send_message(self._gen_mail())
         except Exception as e:
-            log.exception(e)
+            self.log.exception(e)
             pass
         finally:
             conn.quit()

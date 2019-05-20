@@ -1,0 +1,255 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "version",
+    "signature",
+    "config",
+    "status"
+  ],
+  "properties": {
+    "version": {
+      "$id": "#/properties/version",
+      "type": "string",
+      "title": "Version Schema",
+      "description": "Current file format version",
+      "default": "0.0.0",
+      "examples": [
+        "1.0.0"
+      ],
+      "pattern": "^(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)$"
+    },
+    "signature": {
+      "$id": "#/properties/signature",
+      "type": "string",
+      "title": "SHA Hash",
+      "description": "Signature of the full file",
+      "examples": [
+        "be1f53a31f1fa1a68b2f8ed7f8fa1c80feeb8a8d47f287a76521684b1a5a9ca8"
+      ]
+    },
+    "config": {
+      "$id": "#/properties/config",
+      "type": "object",
+      "title": "The Config Schema",
+      "description": "Configuration Storage",
+      "required": [
+        "server",
+        "round"
+      ],
+      "properties": {
+        "server": {
+          "$id": "#/properties/config/properties/server",
+          "type": "array",
+          "title": "The Server Schema",
+          "description": "Store of MailServer Configuration",
+          "items": {
+            "$id": "#/properties/config/properties/server/items",
+            "type": "object",
+            "title": "The Items Schema",
+            "required": [
+              "server_type",
+              "host",
+              "port",
+              "server_name",
+              "valid_at"
+            ],
+            "properties": {
+              "server_type": {
+                "$id": "#/properties/config/properties/server/items/properties/server_type",
+                "type": "string",
+                "enum": [
+                  "IMAP",
+                  "POP",
+                  "SMTP"
+                ],
+                "title": "The Server_type Schema",
+                "description": "Mailserver Type",
+                "default": "",
+                "examples": [
+                  "IMAP"
+                ]
+              },
+              "host": {
+                "$id": "#/properties/config/properties/server/items/properties/host",
+                "type": "string",
+                "title": "The Host Schema",
+                "description": "Mailserver Hostname",
+                "default": "",
+                "examples": [
+                  "mail.example.org"
+                ],
+                "format": "hostname"
+              },
+              "port": {
+                "$id": "#/properties/config/properties/server/items/properties/port",
+                "type": "integer",
+                "enum": [
+                  25,
+                  587,
+                  465,
+                  110,
+                  995,
+                  993,
+                  143
+                ],
+                "title": "The Port Schema",
+                "description": "Mailserver Port",
+                "default": 0,
+                "examples": [
+                  143
+                ]
+              },
+              "use_ssl": {
+                "$id": "#/properties/config/properties/server/items/properties/use_ssl",
+                "type": "boolean",
+                "title": "The Use_ssl Schema",
+                "default": false,
+                "examples": [
+                  true
+                ]
+              },
+              "server_name": {
+                "$id": "#/properties/config/properties/server/items/properties/server_name",
+                "type": "string",
+                "title": "The Server_name Schema",
+                "description": "Shortname of Server",
+                "default": "",
+                "examples": [
+                  ""
+                ],
+                "pattern": "^(.*)$"
+              },
+              "valid_at": {
+                "$id": "#/properties/config/properties/server/items/properties/valid_at",
+                "type": "integer",
+                "title": "Valid at Timestamp",
+                "description": "Valid at Timestamp",
+                "default": 0,
+                "examples": [
+                  123456789
+                ]
+              }
+            }
+          }
+        },
+        "round": {
+          "$id": "#/properties/config/properties/round",
+          "type": "array",
+          "title": "The Rounds Schema",
+          "description": "Connection Pair description",
+          "default": null,
+          "items": {
+            "$id": "#/properties/config/properties/round/items",
+            "type": "object",
+            "title": "The Items Schema",
+            "required": [
+              "in",
+              "out",
+              "timestamp"
+            ],
+            "properties": {
+              "in": {
+                "$id": "#/properties/config/properties/round/items/properties/in",
+                "type": "string",
+                "title": "Mailserver Name",
+                "description": "Name of the outgoing Mailserver",
+                "default": "",
+                "examples": [
+                  "vps1"
+                ]
+              },
+              "out": {
+                "$id": "#/properties/config/properties/round/items/properties/out",
+                "type": "string",
+                "title": "Maileserver Name",
+                "description": "Name of the outgoing Mailserver",
+                "default": "",
+                "examples": [
+                  "vps2"
+                ]
+              },
+              "timestamp": {
+                "$id": "#/properties/config/properties/round/items/properties/timestamp",
+                "type": "integer",
+                "title": "The Timestamp Schema",
+                "default": 0,
+                "examples": [
+                  123456789
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": {
+      "$id": "#/properties/status",
+      "type": "array",
+      "title": "The Status Schema",
+      "items": {
+        "$id": "#/properties/status/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "in",
+          "out",
+          "timestamp",
+          "status"
+        ],
+        "properties": {
+          "in": {
+            "$id": "#/properties/status/items/properties/in",
+            "type": "string",
+            "title": "Ingoing Mailserver",
+            "description": "Name of the Ingoing Mailserver",
+            "default": "",
+            "examples": [
+              "vps1"
+            ]
+          },
+          "out": {
+            "$id": "#/properties/status/items/properties/out",
+            "type": "string",
+            "title": "Ingoing Mailserver",
+            "description": "Name of the Ingoing Mailserver",
+            "default": "",
+            "examples": [
+              "vps2"
+            ]
+          },
+          "timestamp": {
+            "$id": "#/properties/status/items/properties/timestamp",
+            "type": "integer",
+            "title": "The Timestamp Schema",
+            "description": "Timestamp of this log entry",
+            "default": 0,
+            "examples": [
+              123456789
+            ]
+          },
+          "status": {
+            "$id": "#/properties/status/items/properties/status",
+            "type": "string",
+            "title": "The Status Schema",
+            "default": "",
+            "examples": [
+              "status"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "meta": {
+            "$id": "#/properties/status/items/properties/meta",
+            "type": "object",
+            "title": "The Meta Schema",
+            "description": "Dictonary with Additional messages",
+            "default": null
+          }
+        }
+      }
+    }
+  }
+}

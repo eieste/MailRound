@@ -11,11 +11,6 @@ class Configuration:
 
     _ENV_PREFIX = "mailround_"
 
-    """
-        Interval in which the check should be carried out
-    """
-    CHECK_INTERVAL = timedelta(minutes=15)
-
     """ 
         List of Input Mailserver Objects like MailImapServer or MailPopServer
         The Dict key should be the servername
@@ -47,6 +42,11 @@ class Configuration:
     MAIL_ROUND = {
     }
 
+    """
+        Interval in which the check should be carried out
+    """
+    CHECK_INTERVAL = timedelta(minutes=15)
+
     """ 
         Timeout to receive the test mail is to be maintained.
     """
@@ -56,7 +56,16 @@ class Configuration:
         Trigger eg. Chat or FaaS if mailcheck is failing
     """
     WEBHOOK_URL = ""
+
+    """
+        Delete automaticly Mailround test emails    
+    """
     CLEANUP = True
+
+    """
+        Status Log Path
+    """
+    STATUS_LOG_PATH = "./data.mrmp"
 
 
 conf = Configuration()

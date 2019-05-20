@@ -1,2 +1,4 @@
 imapclient==2.1.0
 python-dotenv==0.10.2
+msgpack==0.6.1
+jsonschema==3.0.1
