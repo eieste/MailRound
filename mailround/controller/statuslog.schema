@@ -125,7 +125,7 @@
               },
               "valid_at": {
                 "$id": "#/properties/config/properties/server/items/properties/valid_at",
-                "type": "integer",
+                "type": "number",
                 "title": "Valid at Timestamp",
                 "description": "Valid at Timestamp",
                 "default": 0,
@@ -174,7 +174,7 @@
               },
               "timestamp": {
                 "$id": "#/properties/config/properties/round/items/properties/timestamp",
-                "type": "integer",
+                "type": "number",
                 "title": "The Timestamp Schema",
                 "default": 0,
                 "examples": [
@@ -223,7 +223,7 @@
           },
           "timestamp": {
             "$id": "#/properties/status/items/properties/timestamp",
-            "type": "integer",
+            "type": "number",
             "title": "The Timestamp Schema",
             "description": "Timestamp of this log entry",
             "default": 0,
