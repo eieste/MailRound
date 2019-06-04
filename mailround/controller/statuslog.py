@@ -44,7 +44,7 @@ class StatusLog:
             "out": outname,
             "in": inname,
             "status": status,
-            "timestamp": round(time.time()),
+            "timestamp": time.time(),
         }
         options.update(kwargs)
         self.queue.put(options)
@@ -153,7 +153,7 @@ class StatusWriter(threading.Thread):
         for server_name, server_config in settings.MAIL_OUT_SERVER.items():
             data["config"]["server"] = data["config"]["server"] + self._add_server_to_config(server_name, server_config)
 
-        data["config"]["round"] = [ {"in":inname, "out": outname, "timestamp": round(time.time()) } for outname, inname in settings.MAIL_ROUND.items()]
+        data["config"]["round"] = [ {"in":inname, "out": outname, "timestamp": time.time() } for outname, inname in settings.MAIL_ROUND.items()]
         return data
 
     def _add_server_to_config(self, server_name, server_config):
@@ -195,7 +195,7 @@ class StatusWriter(threading.Thread):
                 "port": int(server_config.port),
                 "use_ssl": bool(server_config.use_ssl),
                 "server_name": server_name,
-                "valid_at": round(time.time())
+                "valid_at": time.time()
             })
         return result
 
