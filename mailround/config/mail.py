@@ -2,6 +2,7 @@ import smtplib
 import imaplib
 from imapclient import IMAPClient
 import logging
+import ssl
 
 
 log = logging.getLogger("mailround.config")
@@ -65,7 +66,10 @@ class MailSmtpServer(MailServer):
         :return conn: SMTP Server connection
         """
         if self.use_ssl:
-            conn = smtplib.SMTP_SSL(self.host, self.port)
+            try:
+                conn = smtplib.SMTP_SSL(self.host, self.port)
+            except ssl.SSLError:
+                conn = smtplib.SMTP(self.host, self.port)
         else:
             conn = smtplib.SMTP(self.host, self.port)
 

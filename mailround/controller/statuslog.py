@@ -88,7 +88,7 @@ class StatusWriter(threading.Thread):
             time.sleep(1)
 
     def integrity_check(self, data):
-        log.info("Check Integrity")
+        log.debug("Check Integrity")
         try:
             if not bool(data):
                 log.warn("New File detected")
@@ -110,7 +110,7 @@ class StatusWriter(threading.Thread):
                 if validate(instance=data, schema=schema):
                     log.error("Wrong Schema")
                     return False
-                log.info("Integrity looks fine")
+                log.debug("Integrity looks fine")
                 return True
 
         except Exception as e:

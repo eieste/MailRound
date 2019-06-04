@@ -15,6 +15,15 @@ import io
 from controller.statuslog import StatusLog
 
 
+class ContextFilter(logging.Filter):
+
+    def filter(self, record):
+        if type(record.threadName) is tuple:
+            record.threadName = "->".join(record.threadName)
+
+        return True
+
+
 class RoundTrip(threading.Thread):
 
     def __init__(self, mailout, mailin, servernames, **kwargs):
@@ -68,9 +77,9 @@ class RoundTrip(threading.Thread):
 
     def setup_log(self):
 
-        log = logging.getLogger("mailround.controller.round_trip")
+        log = logging.getLogger("mailround.controller.round_trip.{}".format("_".join(self._name)))
 
-        formatter = logging.Formatter('%(levelname)s:%(name)s - %(threadName)s:%(message)s')
+        formatter = logging.Formatter('%(levelname)s:%(name)s: %(message)s')
 
         self._log_handler.setFormatter(formatter)
         self._log_handler.setLevel(logging.INFO)
@@ -87,21 +96,23 @@ class RoundTrip(threading.Thread):
         StatusLog.get_instance().add_status(self.name[0], self.name[1], "start")
         try:
             # Trigger Mail Sen
-
             StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_sendmail")
             self.sendmail()
             StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_sendmail")
         except Exception as e:
             self.log.exception(e)
+            self._error = True
             self.log.error("Error by send E-Mail from {}".format(self._name[1]))
 
-        try:
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_receive")
-            self.receive()
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_receive")
-        except Exception as e:
-            self.log.exception(e)
-            self.log.error("Error by Recive E-Mail at Mailbox {} ".format(self._name[0]))
+        if not self._error:
+            try:
+                StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_receive")
+                self.receive()
+                StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_receive")
+            except Exception as e:
+                self._error = True
+                self.log.exception(e)
+                self.log.error("Error by Recive E-Mail at Mailbox {} ".format(self._name[0]))
 
         if self._error:
             StatusLog.get_instance().add_status(self.name[0], self.name[1], "error")
@@ -112,7 +123,9 @@ class RoundTrip(threading.Thread):
             StatusLog.get_instance().add_status(self.name[0], self.name[1], "success")
             self.log.info("SUCCESS between {} to {}".format(self.name[0], self.name[1]))
             self.log.removeHandler(self._log_handler)
+            #log_contents = self._log_data.getvalue()
             self._log_data.close()
+
 
     def _gen_mail(self):
         self.log.debug("Generate E-Mail Message")
@@ -129,11 +142,12 @@ If MailRound works it will be deleted""")
         return msg
 
     def sendmail(self):
-        self.log.info("Try to send mail via {}".format(self._mail_out.host))
+        self.log.debug("Try to send mail via {}".format(self._mail_out.host))
         conn = self._mail_out.get_connection()
 
         try:
             conn.send_message(self._gen_mail())
+            self.log.info("E-Mail sucessfully send via {}".format(self._name[0]))
         except Exception as e:
             self.log.exception(e)
             pass
@@ -145,7 +159,7 @@ If MailRound works it will be deleted""")
 
         start_timestamp = datetime.datetime.now()
         conn.idle()
-        self.log.info("Set Mailbox to IDLE mode")
+        self.log.debug("Set Mailbox to IDLE mode")
         while not ENDIDLE:
             try:
                 # Wait for up to 30 seconds for an IDLE response
@@ -165,6 +179,8 @@ If MailRound works it will be deleted""")
         conn.idle_done()
 
     def _verify_mailround_mail(self, msg_id, data):
+        if b"RFC822" not in data:
+            return False
         bin_body = data[b"RFC822"]
 
         email_body = email.message_from_bytes(bin_body)
@@ -174,11 +190,10 @@ If MailRound works it will be deleted""")
             return False
 
         if self.uuid.hex in mail_round_uuid:
-            self.log.info("Found Mail with same UUID")
+            self.log.debug("Found Mail with same UUID")
             return True
         else:
             if len(mail_round_uuid) >= 1:
-                self.log.info("Found other E-Mails with Mail-Round Header. this is a note for active greylog")
                 self._graylisting = True
 
         return False
@@ -198,11 +213,10 @@ If MailRound works it will be deleted""")
                 if hasattr(settings, "CLEANUP"):
                     self._delete_msg(conn, message_id)
                 break
-
         return FOUND_MAIL_ROUND_TEST
 
     def receive(self):
-        self.log.info("Wait for E-Mail")
+        self.log.debug("Wait for E-Mail")
 
         start_timestamp = datetime.datetime.now()
 
@@ -220,6 +234,12 @@ If MailRound works it will be deleted""")
                 self._error = True
                 break
 
+        if self._graylisting:
+            self.log.warn("Found other E-Mails with Mail-Round Header. this is a note for active greylog")
+
+        if self._error is False:
+            self.log.info("E-Mail successfuly recived at {} from {}".format(self._name[1], self._name[0]))
+
         conn.logout()
 
     def notify(self):
@@ -228,7 +248,9 @@ If MailRound works it will be deleted""")
         self._log_data.close()
 
         body = {
-            "text": log_contents,
+            "text": """*Mailround*
+Error between {}
+```{}```""".format("->".join(self._name), log_contents),
         }
 
         req = urllib.request.Request(settings.WEBHOOK_URL)

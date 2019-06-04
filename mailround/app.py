@@ -65,14 +65,14 @@ class Command:
             time.sleep(1)
 
     def get_thread(self, outname, inname, mailround_thread_store):
-        log.info("Thread for {} {} ".format(outname, inname))
+        log.debug("Thread for {} {} ".format(outname, inname))
         if "{}{}".format(outname, inname) in mailround_thread_store:
             t = mailround_thread_store["{}{}".format(outname, inname)]
             if not t._is_stopped:
-                log.info("Stop Thread {}{}".format(outname, inname))
+                log.debug("Stop Thread {}{}".format(outname, inname))
                 t.join(2)
 
-        log.info("Create new Thread {}{}".format(outname, inname))
+        log.debug("Create new Thread {}{}".format(outname, inname))
         mailround_thread_store["{}{}".format(outname, inname)] = RoundTrip(settings.MAIL_OUT_SERVER[outname], settings.MAIL_IN_SERVER[inname], (outname, inname), name="rt-{}{}".format(outname, inname))
         return mailround_thread_store["{}{}".format(outname, inname)]
 
