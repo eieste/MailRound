@@ -39,8 +39,9 @@ class StatusLog:
         self._stop = True
         self._writer_thread.join(1)
 
-    def add_status(self, outname, inname, status, **kwargs):
+    def add_status(self, group, outname, inname, status, **kwargs):
         options = {
+            "group": group,
             "out": outname,
             "in": inname,
             "status": status,

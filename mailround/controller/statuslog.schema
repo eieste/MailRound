@@ -201,6 +201,13 @@
           "status"
         ],
         "properties": {
+          "group": {
+            "$id": "#/properties/status/items/properties/group",
+            "type": "string",
+            "title": "Group UID",
+            "description": "Groups the mailround",
+            "default": ""
+          },
           "in": {
             "$id": "#/properties/status/items/properties/in",
             "type": "string",

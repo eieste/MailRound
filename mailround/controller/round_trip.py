@@ -93,12 +93,12 @@ class RoundTrip(threading.Thread):
 
     def run(self):
 
-        StatusLog.get_instance().add_status(self.name[0], self.name[1], "start")
+        StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "start")
         try:
             # Trigger Mail Sen
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_sendmail")
+            StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "start_sendmail")
             self.sendmail()
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_sendmail")
+            StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "end_sendmail")
         except Exception as e:
             self.log.exception(e)
             self._error = True
@@ -106,21 +106,21 @@ class RoundTrip(threading.Thread):
 
         if not self._error:
             try:
-                StatusLog.get_instance().add_status(self.name[0], self.name[1], "start_receive")
+                StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "start_receive")
                 self.receive()
-                StatusLog.get_instance().add_status(self.name[0], self.name[1], "end_receive")
+                StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "end_receive")
             except Exception as e:
                 self._error = True
                 self.log.exception(e)
                 self.log.error("Error by Recive E-Mail at Mailbox {} ".format(self._name[0]))
 
         if self._error:
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "error")
+            StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "error")
             if self._graylisting:
-                StatusLog.get_instance().add_status(self.name[0], self.name[1], "greylisting")
+                StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "greylisting")
             self.notify()
         else:
-            StatusLog.get_instance().add_status(self.name[0], self.name[1], "success")
+            StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "success")
             self.log.info("SUCCESS between {} to {}".format(self.name[0], self.name[1]))
             self.log.removeHandler(self._log_handler)
             #log_contents = self._log_data.getvalue()
