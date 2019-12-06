@@ -45,4 +45,25 @@ services:
 
 ```
 
+## Getting Started Locally
+
+To get started in your local environment
+
+    git clone git@github.com:eieste/MailRound.git
+
+Setup the environment
+
+    cd mailround
+    python3 -m venv env
+    source env/bin.activate
+    python -m pip install -r requirements.txt
+
+Update config
+
+    vi config/config.py
+
+Run the application
+
+    python app.py
+
 For more Assistance use my [Documentation](https://github.com/eieste/MailRound/blob/develop/docs/overview.md)
