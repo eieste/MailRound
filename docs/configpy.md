@@ -27,7 +27,7 @@ class Configuration:
         List of Output Mailserver Objects like MailSmtpServer
     
         {
-            "vps2": MailImapServer("mailout.test.com", 143, False, MailCredentials("test@example.com", "secret))
+            "vps2": MailSmtpServer("mailout.test.com", 143, False, MailCredentials("test@example.com", "secret))
         }    
     """
     MAIL_OUT_SERVER = {
