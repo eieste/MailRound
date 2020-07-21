@@ -16,7 +16,7 @@ class Configuration:
         The Dict key should be the servername
         eg:
         {
-            "vps1": MailImapServer("mailin.example.com", 143, False, MailCredentials("test@example.com", "secret))
+            "vps1": MailImapServer("mailin.example.com", 143, False, MailCredentials("test@example.com", "secret"))
         }
     """
     MAIL_IN_SERVER = {
@@ -26,7 +26,7 @@ class Configuration:
         List of Output Mailserver Objects like MailSmtpServer
     
         {
-            "vps2": MailImapServer("mailout.test.com", 143, False, MailCredentials("test@example.com", "secret))
+            "vps2": MailSmtpServer("mailout.test.com", 143, False, MailCredentials("test@example.com", "secret"))
         }    
     """
     MAIL_OUT_SERVER = {
