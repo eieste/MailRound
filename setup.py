@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mailround",
-    version="1.1.1",
+    version="1.1.2",
     author="Stefan Eiermann",
     author_email="foss@ultraapp.de",
     description="Simple tool to check the sending and receiving of e-mails.",
