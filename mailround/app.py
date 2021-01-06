@@ -1,13 +1,11 @@
 import argparse
+import logging
+import time
+from datetime import datetime
+
 from config import settings
 from controller.round_trip import RoundTrip
-import threading
-import logging
-import io
 from controller.statuslog import StatusLog
-from datetime import datetime
-import time
-
 
 logging.basicConfig(level=logging.INFO)
 
@@ -56,7 +54,7 @@ class Command:
         last_check = datetime.fromtimestamp(0)
         while True:
 
-            if last_check < datetime.now()-settings.CHECK_INTERVAL:
+            if last_check < datetime.now() - settings.CHECK_INTERVAL:
                 last_check = datetime.now()
 
                 for outname, inname in settings.MAIL_ROUND.items():
@@ -73,9 +71,11 @@ class Command:
                 t.join(2)
 
         log.debug("Create new Thread {}{}".format(outname, inname))
-        mailround_thread_store["{}{}".format(outname, inname)] = RoundTrip(settings.MAIL_OUT_SERVER[outname], settings.MAIL_IN_SERVER[inname], (outname, inname), name="rt-{}{}".format(outname, inname))
+        mailround_thread_store["{}{}".format(outname, inname)] = RoundTrip(settings.MAIL_OUT_SERVER[outname],
+                                                                           settings.MAIL_IN_SERVER[inname],
+                                                                           (outname, inname),
+                                                                           name="rt-{}{}".format(outname, inname))
         return mailround_thread_store["{}{}".format(outname, inname)]
-
 
     def mailbox_cleanup(self, server_config):
         conn = server_config.get_connection()
@@ -86,8 +86,8 @@ class Command:
             conn.expunge(message_id)
         conn.logout()
 
-if __name__ != "__name__":
 
+if __name__ != "__name__":
     parser = argparse.ArgumentParser()
 
     cmd = Command()

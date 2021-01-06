@@ -1,19 +1,21 @@
-import os
-from os.path import join, dirname
-from dotenv import load_dotenv
-import re
-from config.mail import MailSmtpServer, MailCredentials, MailImapServer, MailPopServer
-from datetime import timedelta
 import logging
+import os
+import re
+from datetime import timedelta
+from os.path import join, dirname
+
+from config.mail import MailSmtpServer, MailCredentials, MailImapServer, MailPopServer
+from dotenv import load_dotenv
 
 log = logging.getLogger("mailround.config")
 
-class LoadEnvironment:
 
+class LoadEnvironment:
     ENV_PREFIX = "MAILROUND"
 
     def __init__(self, conf):
-        self.REGEX = re.compile(r'MAILROUND_(?P<ServerType>IN_IMAP|IN_POP|OUT_SMTP)_(?P<Name>.*)_(?P<Setting>HOST|USERNAME|PASSWORD|USE_SSL|EMAIL|PORT)')
+        self.REGEX = re.compile(
+            r'MAILROUND_(?P<ServerType>IN_IMAP|IN_POP|OUT_SMTP)_(?P<Name>.*)_(?P<Setting>HOST|USERNAME|PASSWORD|USE_SSL|EMAIL|PORT)')
 
         dotenv_path = join(dirname(__file__), '../.env')
         load_dotenv(dotenv_path)
@@ -28,7 +30,6 @@ class LoadEnvironment:
             if self.check_prefix(env_key, self.ENV_PREFIX):
                 settings[env_key] = env_value
         return settings
-
 
     def load(self):
         settings = self.find_with_prefix(os.environ, self.ENV_PREFIX)
@@ -107,8 +108,8 @@ class LoadEnvironment:
     def add_out_mailboxes_to_config(self, mailboxes):
         for servername, server in mailboxes["out"].items():
             self.conf.MAIL_OUT_SERVER[servername] = MailSmtpServer(server["HOST"], server["PORT"], server["USE_SSL"],
-                                                                  server["EMAIL"], MailCredentials(server["USERNAME"],
-                                                                                                   server["PASSWORD"]))
+                                                                   server["EMAIL"], MailCredentials(server["USERNAME"],
+                                                                                                    server["PASSWORD"]))
 
     def add_in_mailboxes_to_config(self, mailboxes):
 
@@ -138,6 +139,6 @@ class LoadEnvironment:
         return False
 
     def remove_prefix(self, name, prefix):
-        if name[len(prefix):len(prefix)+1] == "_":
-            return name[len(prefix)+1:]
+        if name[len(prefix):len(prefix) + 1] == "_":
+            return name[len(prefix) + 1:]
         return name[len(prefix):]

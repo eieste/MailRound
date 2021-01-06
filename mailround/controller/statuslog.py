@@ -1,23 +1,20 @@
-from queue import Queue
+import hashlib
+import json
+import logging
+import os
 import threading
+import time
+from queue import Queue
+
 import msgpack
 from config import settings
-import time
-import logging
-import json
-import hashlib
 from config.mail import MailSmtpServer, MailPopServer, MailImapServer
-from datetime import datetime, timedelta
-import json
 from jsonschema import validate
-import os
-
-
 
 log = logging.getLogger("controller.statuslog")
 
-class StatusLog:
 
+class StatusLog:
     instance = False
 
     @staticmethod
@@ -123,7 +120,6 @@ class StatusWriter(threading.Thread):
         fobj.seek(0)
         return msgpack.unpack(fobj, raw=False)
 
-
     def write_statuslog(self, fobj, data):
         m = hashlib.sha256()
         m.update(msgpack.packb({"status": data["status"], "config": data["config"]}))
@@ -154,7 +150,8 @@ class StatusWriter(threading.Thread):
         for server_name, server_config in settings.MAIL_OUT_SERVER.items():
             data["config"]["server"] = data["config"]["server"] + self._add_server_to_config(server_name, server_config)
 
-        data["config"]["round"] = [ {"in":inname, "out": outname, "timestamp": time.time() } for outname, inname in settings.MAIL_ROUND.items()]
+        data["config"]["round"] = [{"in": inname, "out": outname, "timestamp": time.time()} for outname, inname in
+                                   settings.MAIL_ROUND.items()]
         return data
 
     def _add_server_to_config(self, server_name, server_config):

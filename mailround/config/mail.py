@@ -1,11 +1,11 @@
-import smtplib
-import imaplib
-from imapclient import IMAPClient
 import logging
+import smtplib
 import ssl
 
+from imapclient import IMAPClient
 
 log = logging.getLogger("mailround.config")
+
 
 class MailCredentials:
 

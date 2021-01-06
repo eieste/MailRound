@@ -1,17 +1,15 @@
-import logging
-import smtplib
-from email.message import EmailMessage
+import datetime
 import email.message
 import email.utils
-import uuid
-import threading
-import datetime
-from config import settings
-import urllib.parse
-import urllib.request
+import io
 import json
 import logging
-import io
+import threading
+import urllib.parse
+import urllib.request
+import uuid
+
+from config import settings
 from controller.statuslog import StatusLog
 
 
@@ -123,9 +121,8 @@ class RoundTrip(threading.Thread):
             StatusLog.get_instance().add_status(self.uuid.hex, self.name[0], self.name[1], "success")
             self.log.info("SUCCESS between {} to {}".format(self.name[0], self.name[1]))
             self.log.removeHandler(self._log_handler)
-            #log_contents = self._log_data.getvalue()
+            # log_contents = self._log_data.getvalue()
             self._log_data.close()
-
 
     def _gen_mail(self):
         self.log.debug("Generate E-Mail Message")
@@ -229,7 +226,7 @@ If MailRound works it will be deleted""")
             self._receive_idle(conn)
             FOUND_MAIL_ROUND_TEST = self._seach_in_mailbox(conn)
 
-            if datetime.datetime.now() > start_timestamp+settings.MAX_MAIL_RECEIVE_TIME:
+            if datetime.datetime.now() > start_timestamp + settings.MAX_MAIL_RECEIVE_TIME:
                 self.log.warn("Maximal Mailbox watchtime Reached. Terminate")
                 self._error = True
                 break

@@ -7,7 +7,7 @@ setuptools.setup(
     name="mailround",
     version="1.1.1",
     author="Stefan Eiermann",
-    author_email="python-org@ultraapp.de",
+    author_email="foss@ultraapp.de",
     description="Simple tool to check the sending and receiving of e-mails.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -25,5 +25,11 @@ setuptools.setup(
         "Topic :: Communications :: Email",
         "Topic :: System :: Monitoring"
     ],
+    install_requires=[
+        "imapclient>=2.1.0"
+        "python3-dotenv>=0.15.0"
+        "msgpack>=1.0.2"
+        "jsonschema>=3.2.0"
+    ]
 )
 

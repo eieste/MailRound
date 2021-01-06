@@ -1,5 +1,4 @@
 from datetime import timedelta
-from config.mail import MailCredentials, MailSmtpServer, MailImapServer
 from datetime import timedelta
 import logging
 from config.envload import LoadEnvironment
@@ -8,7 +7,6 @@ log = logging.getLogger("mailround.config")
 
 
 class Configuration:
-
     _ENV_PREFIX = "mailround_"
 
     """ 
@@ -72,4 +70,3 @@ conf = Configuration()
 env = LoadEnvironment(conf)
 env.load()
 settings = conf
-
